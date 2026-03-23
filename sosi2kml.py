@@ -51,15 +51,14 @@
 #----------------------------------------------------------------------
 # Imports necessary libraries
 #
-import os                            # Standard library 
-import sys                           # Standard library 
+import os                             # Standard library
+import sys                           # Standard library
 import re                            # Standard library
-import glob                          # Standard library 
-import fileinput                     # Standard library 
-import shutil                        # Standard library 
+import glob                          # Standard library
+import shutil                        # Standard library
 import fnmatch                       # Standard library
-from   configobj import ConfigObj    # http://www.voidspace.org.uk/python/configobj.html
-from   optparse  import OptionParser # Standard library for parsing of script options
+from   configobj  import ConfigObj   # http://www.voidspace.org.uk/python/configobj.html
+from   argparse   import ArgumentParser  # Standard library for parsing of script options
 
 import psycopg2                      # Psyco pg 2: www.initd.org/tracker/psycopg/wiki/PsycopgTwo
 
@@ -94,20 +93,20 @@ def main():
 	#
 	# Get command line arguments from the option parser
 	#
-	parser = OptionParser()
+	parser = ArgumentParser()
 
-	parser.add_option("-f", "--file",      action="store", type="string",           dest="sosiFilename",  help="SOSI input file.",       metavar="FILE")
-	parser.add_option("-o", "--out",       action="store", type="string",           dest="kmldest",       help="KML destination filename.",  metavar="FILE")
-	parser.add_option("-c", "--colour",    action="store", type="string",           dest="colour",        help="Colour for kml-file objects. (-c AABBCC)")
-	parser.add_option("-v", "--verbose",   action="store_const", const=1,           dest="verbose",       help="Show status messages")
-	parser.add_option("-w", "--what",      action="store_const", const="what",      dest="action",        help="More help is on the way. What more to ask for?")
-	parser.add_option("-i", "--import",    action="store_const", const="import",    dest="action",        help="Import a SOSI-file to the database")
-	parser.add_option("-e", "--export",    action="store_const", const="export",    dest="action",        help="Export a SOSI file from the database")
-	parser.add_option("-d", "--dir",       action="store_const", const="directory", dest="action",        help="All .sos or .SOS in the current directory")
-	parser.add_option("-m", "--mass",      action="store_const", const="mass",      dest="action",        help="Recursive directory copy and conversion")
-	parser.add_option("-r", "--reset",     action="store_const", const="reset",     dest="action",        help="Delete all data from the database")
+	parser.add_argument("-f", "--file",                                         dest="sosiFilename",  help="SOSI input file.",       metavar="FILE")
+	parser.add_argument("-o", "--out",                                          dest="kmldest",       help="KML destination filename.",  metavar="FILE")
+	parser.add_argument("-c", "--colour",                                       dest="colour",        help="Colour for kml-file objects. (-c AABBCC)")
+	parser.add_argument("-v", "--verbose",   action="store_const", const=1,    dest="verbose",       help="Show status messages")
+	parser.add_argument("-w", "--what",      action="store_const", const="what",      dest="action",        help="More help is on the way. What more to ask for?")
+	parser.add_argument("-i", "--import",    action="store_const", const="import",    dest="action",        help="Import a SOSI-file to the database")
+	parser.add_argument("-e", "--export",    action="store_const", const="export",    dest="action",        help="Export a SOSI file from the database")
+	parser.add_argument("-d", "--dir",       action="store_const", const="directory", dest="action",        help="All .sos or .SOS in the current directory")
+	parser.add_argument("-m", "--mass",      action="store_const", const="mass",      dest="action",        help="Recursive directory copy and conversion")
+	parser.add_argument("-r", "--reset",     action="store_const", const="reset",     dest="action",        help="Delete all data from the database")
 
-	(options, args) = parser.parse_args()
+	options = parser.parse_args()
 
 	if options.verbose:
 		verbose = True
@@ -118,7 +117,7 @@ def main():
 		sosiFilename = options.sosiFilename
 
 		if verbose:
-			print "Source file      : %s" % (sosiFilename)
+			print("Source file      : %s" % (sosiFilename))
 
 	else:
 		abort = 1
@@ -140,7 +139,7 @@ def main():
 
 	# Print destination file name when the file is being exported
 	if (verbose and (options.action != 'reset') and (options.action != 'directory') and (options.action != 'import') and (options.action != 'mass')):
-		print "Destination file : %s.kml" % (kmldest)
+		print("Destination file : %s.kml" % (kmldest))
 
 
 	# Decides which action the script should take.
@@ -148,7 +147,7 @@ def main():
 		action = options.action
 
 		if verbose:
-			print "Action           : %s" % (action)
+			print("Action           : %s" % (action))
 
 	else:
 		abort = 1
@@ -165,7 +164,7 @@ def main():
 
 
 	if (verbose and ((options.action != 'reset') and  (options.action != 'import') and  (options.action != 'mass'))):
-		print "Colour           : %s" % (stylePolyColour)
+		print("Colour           : %s" % (stylePolyColour))
 
 
 	# # # # # # # # # #
@@ -257,7 +256,7 @@ def main():
 
 			if (re.search("\xe6",fileLine)):
 				fileLine = fileLine.replace('\xe6','a')
-				print fileLine
+				print(fileLine)
 
 				if (re.search("\xc6",fileLine)):
 					fileLine = fileLine.replace('\xc6','A')
@@ -280,15 +279,15 @@ def main():
 			# and SOSINL...  The line is then split into a list based on NL and 
 			# written line by line to the file.
 
-			if ((re.search(" \.\.\.",fileLine)) or (re.search(" \.\.",fileLine))):
+			if ((re.search(r" \.\.\.",fileLine)) or (re.search(r" \.\.",fileLine))):
 
 
-				if (re.search(" \.\.\.[A-Z]",fileLine)):
+				if (re.search(r" \.\.\.[A-Z]",fileLine)):
 
 					fileLine = fileLine.replace("...","SOSINL\n...")
 
 
-				if (re.search(" \.\.[A-Z]",fileLine)):
+				if (re.search(r" \.\.[A-Z]",fileLine)):
 
 					fileLine = fileLine.replace("..","SOSINL\n..")
 
@@ -353,29 +352,29 @@ def main():
 		for fileLine in fileList:
 
 			# Find out if this is a SOSI level one line.
-			if (re.match("\.[A-Z]",fileLine)):
+			if (re.match(r"\.[A-Z]",fileLine)):
 				# If so -  work on it
 				cur_sniv1id = sosi.manageSniv1(conn, cur, fileLine, list_sniv1, list_geoobj)
 
 				sosi.insertRelateFileSniv1(conn,cur,fileid,cur_sniv1id)
 
-			elif(re.match("\.\.[A-Z]",fileLine)):
+			elif(re.match(r"\.\.[A-Z]",fileLine)):
 				# If so -  work on it
 				cur_sniv2id = sosi.manageSniv2(conn, cur, fileLine, cur_sniv1id, list_sniv2)
 
-			elif(re.match("\.\.\.[A-Z]",fileLine)):
+			elif(re.match(r"\.\.\.[A-Z]",fileLine)):
 				# If so -  work on it
 				cur_Sniv3id = sosi.manageSniv3(conn, cur, fileLine, cur_sniv2id, cur_koordid, list_sniv3)
 
 				# Nulls the value for te last coordinate as we are 
 				# likely to get a new round of coordinates at this point.
-				cur_koordid == ""
+				cur_koordid = ""
 
 			elif (re.match("![a-zA-Z0-9!_]",fileLine)):
 				# Exclamation marks (!) indicates a comment line. Ignored for now.
 				invalid=0
 
-			elif (re.match("[0-9\s0-9]",fileLine)):
+			elif (re.match(r"[0-9\s0-9]",fileLine)):
 				# A line with two numerals are a coordinate (XY). SOSI files with 
 				# three coordinates (XYZ) are not covered in this version of sosi2kml
 
@@ -389,7 +388,7 @@ def main():
 		#delete the .tmp-file
 		os.unlink(sosiTempname)
 
-		print "Status           : OK"
+		print("Status           : OK")
 
 
 	# # # # # # # # # #
@@ -424,7 +423,7 @@ def main():
 		else:
 			sosiUTM = "%sN" % (int(sosiUTM)+10)
 
-		print sosiUTM
+		print(sosiUTM)
 
 
 		# Initiating KML-file
@@ -505,7 +504,7 @@ def main():
 					# Nested object is drawn
 					if len(contentRef)>0:
 
-						allHits = re.compile("\(.*?\)", re.I)
+						allHits = re.compile(r"\(.*?\)", re.I)
 
 						parantesListe = allHits.findall(contentRef[0])
 
@@ -517,9 +516,9 @@ def main():
 							# Strip characters from the main string
 							restcontentRef = restcontentRef.replace(groupPart,"")
 
-							referencePart  = groupPart.lstrip("\(")
+							referencePart  = groupPart.lstrip("(")
 
-							referencePart  = referencePart.rstrip("\)")
+							referencePart  = referencePart.rstrip(")")
 
 							referencePart  = referencePart.strip(":")
 
@@ -649,7 +648,7 @@ def main():
 		kmlFile_temp.close()
 
 		if verbose:
-			print "Status           : OK"
+			print("Status           : OK")
 
 
 	# # # # # # # # # #
@@ -663,32 +662,18 @@ def main():
 		for infile in glob.glob( os.path.join(path, '*.sos') ):
 
 			if verbose:
-				print "Processing       : %s" % (infile)
+				print("Processing       : %s" % (infile))
 
 
-			if sys.platform == 'linux2':
-				os.system("python sosi2kml.py -r")
-			else:
-				os.system("sosi2kml.py -r")
+			os.system("%s sosi2kml.py -r" % sys.executable)
 
-			if sys.platform == 'linux2':
-				executestring = "python sosi2kml.py -f %s -i" % (infile)
-			else:
-				executestring = "sosi2kml.py -f %s -i" % (infile)
+			os.system("%s sosi2kml.py -f %s -i" % (sys.executable, infile))
 
-			os.system(executestring)
-
-
-			if sys.platform == 'linux2':
-				executestring = "python sosi2kml.py -f %s -e" % (infile)
-			else:
-				executestring = "sosi2kml.py -f %s -e" % (infile)
-
-			os.system(executestring)
+			os.system("%s sosi2kml.py -f %s -e" % (sys.executable, infile))
 
 
 		if verbose:
-			print "Status           : OK"
+			print("Status           : OK")
 
 
 	# # # # # # # # # #
@@ -701,7 +686,7 @@ def main():
 
 
 		if verbose:
-			print "Copying files"
+			print("Copying files")
 
 		#make a copy of the source directory to a destination directory folder
 		dirList=os.listdir(startDir)
@@ -712,7 +697,7 @@ def main():
 
 
 		if verbose:
-			print "Working on files."
+			print("Working on files.")
 
 
 		#Traverse through the destination directory (newly copied with all .sos files)
@@ -732,33 +717,19 @@ def main():
 					sosiSubject =os.path.join(root,onefile)
 
 					if verbose:
-						print "Preparing %s" % (onefile)
+						print("Preparing %s" % (onefile))
 
 					# reset database
-					if sys.platform == 'linux2':
-						os.system("python sosi2kml.py -r")
-					else:
-						os.system("sosi2kml.py -r")
+					os.system("%s sosi2kml.py -r" % sys.executable)
 
 					if verbose:
-						print "Emptied database"
+						print("Emptied database")
 
 					# convert file to KML
-					if sys.platform == 'linux2':
-						executestring = "python sosi2kml.py -f %s -i" % (sosiSubject)
-					else:
-						executestring = "sosi2kml.py -f %s -i" % (sosiSubject)
-
-					os.system(executestring)
-
+					os.system("%s sosi2kml.py -f %s -i" % (sys.executable, sosiSubject))
 
 					#export the converted file
-					if sys.platform == 'linux2':
-						executestring = "python sosi2kml.py -f %s -e" % (sosiSubject)
-					else:
-						executestring = "sosi2kml.py -f %s -e" % (sosiSubject)
-
-					os.system(executestring)
+					os.system("%s sosi2kml.py -f %s -e" % (sys.executable, sosiSubject))
 
 
 					#delete sosi file in destination folder 
@@ -774,7 +745,7 @@ def main():
 		sosi.resetDatabase(conn,cur)
 
 		if verbose:
-			print "Status           : OK"
+			print("Status           : OK")
 
 
 	# # # # # # # # # #
@@ -796,7 +767,7 @@ def main():
 	else:
 
 		if verbose:
-			print "Status           : Error?"
+			print("Status           : Error?")
 
 
 # # # # # # # # # #

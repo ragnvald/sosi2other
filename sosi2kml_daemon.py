@@ -72,7 +72,7 @@ formoreinformation    = 'More information about QDGC (Quarter Degree Grid Cells)
 errorflag             = 0
 
 
-def genRandomstring(length=8, chars=string.letters + string.digits):
+def genRandomstring(length=8, chars=string.ascii_letters + string.digits):
 	return ''.join([choice(chars) for i in range(length)])
 
 
@@ -101,7 +101,7 @@ while 1:
 			time_for_job = now.strftime("%Y-%m-%d %H:%M")
 
 			# Create a string which will later serve as a random folder name
-			randomfolder = genRandomstring(20,string.letters)
+			randomfolder = genRandomstring(20,string.ascii_letters)
 
 			# Make the random folder. This is referred to as the user folder
 			os.mkdir(folder_destination+randomfolder)
@@ -154,7 +154,7 @@ while 1:
 			# Convert file in folder out
 
 			# Timer starts
-			t1 = time.clock()            
+			t1 = time.perf_counter()
 
 			# set counter
 			counter = 0
@@ -170,7 +170,7 @@ while 1:
 
 			if errorflag == 0:
 				# Timer ends and then calculate the speed
-				t2                       = time.clock()
+				t2                       = time.perf_counter()
 				log_time                 = (t2-t1)
 				log_posts                = (counter)
 				if (log_time <1 ):
@@ -178,7 +178,7 @@ while 1:
 				else:
 					log_conversionspersecond = int(log_posts/log_time)
 
-				the_logfile = the_logfile +'\n'+  'Konverteringen ble gjort i løpet av %s sekunder.\n\n' % (log_time, log_conversionspersecond)
+				the_logfile = the_logfile +'\n'+  'Konverteringen ble gjort i lï¿½pet av %s sekunder (%s konverteringer per sekund).\n\n' % (log_time, log_conversionspersecond)
 
 				# Prepare link address
 				user_link_outputfile = path_web + randomfolder  + '/out/' +  onefile
@@ -189,7 +189,7 @@ while 1:
 				the_logfile = the_logfile +'\n'+'Lenke til loggfilen er: %s' % user_link_logfile
 
 			else:
-				the_logfile = the_logfile +'\n'+'Noe gikk galt. Ta kontakt med miljødataseksjonen anående denne filen.'
+				the_logfile = the_logfile +'\n'+'Noe gikk galt. Ta kontakt med miljï¿½dataseksjonen anï¿½ende denne filen.'
 
 			# Send email with status and link to user            
 			subject ='Kovertering per %s' % time_for_job
@@ -207,14 +207,14 @@ while 1:
 				server.login(USER,PWD)
 				server.sendmail(USER, [user_email], message)
 				server.close()
-				print "Successfully sent email"
+				print("Successfully sent email")
 				server.quit      
 			except:
 				#damn!
 				the_logfile = the_logfile +'\n'+'The SMTP sendmail failed.' 
 
 
-			print the_logfile
+			print(the_logfile)
 
 			#Log user email, input file name and user comment in logfile
 			#
