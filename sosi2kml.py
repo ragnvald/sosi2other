@@ -374,7 +374,7 @@ def main():
 				# Exclamation marks (!) indicates a comment line. Ignored for now.
 				invalid=0
 
-			elif (re.match(r"[0-9\s0-9]",fileLine)):
+			elif (re.match(r"[0-9\s]",fileLine)):
 				# A line with two numerals are a coordinate (XY). SOSI files with 
 				# three coordinates (XYZ) are not covered in this version of sosi2kml
 
