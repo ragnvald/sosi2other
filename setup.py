@@ -1,4 +1,12 @@
-from distutils.core import setup
-import py2exe
+from setuptools import setup
 
-setup(console=['sosi2kml.py'])
+setup(
+    name='sosi2other',
+    version='0.8',
+    description='SOSI to KML conversion utility',
+    scripts=['sosi2kml.py'],
+    install_requires=[
+        'configobj',
+        'psycopg2',
+    ],
+)

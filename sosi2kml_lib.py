@@ -81,41 +81,17 @@ def new_seqid(f_dbConn,f_dbConnCursor):
 #
 def resetDatabase(f_dbConn,f_dbConnCursor):
 
-	f_cur = f_dbConn.cursor()	
+	f_cur = f_dbConn.cursor()
 
-	f_cur.execute("DELETE from tbl_rel_sniv1_sniv2")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_rel_sniv2_sniv3")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_rel_geoobj_koordinat")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_rel_fil_sniv1")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_fil")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_koordinat")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_sniv1")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_sniv2")
-
-	f_dbConn.commit()
-
-	f_cur.execute("DELETE from tbl_sniv3")
+	f_cur.execute("DELETE FROM tbl_rel_sniv1_sniv2")
+	f_cur.execute("DELETE FROM tbl_rel_sniv2_sniv3")
+	f_cur.execute("DELETE FROM tbl_rel_geoobj_koordinat")
+	f_cur.execute("DELETE FROM tbl_rel_fil_sniv1")
+	f_cur.execute("DELETE FROM tbl_fil")
+	f_cur.execute("DELETE FROM tbl_koordinat")
+	f_cur.execute("DELETE FROM tbl_sniv1")
+	f_cur.execute("DELETE FROM tbl_sniv2")
+	f_cur.execute("DELETE FROM tbl_sniv3")
 
 	f_dbConn.commit()
 
@@ -128,8 +104,8 @@ def insertFile(f_dbConn,f_dbConnCursor,fileName):
 
 	id_new = new_seqid(f_dbConn,f_dbConnCursor)
 
-	f_dbConnCursor.execute("INSERT INTO tbl_fil (id, filnavn) VALUES (%s,'%s')" \
-	                       % (id_new,fileName))
+	f_dbConnCursor.execute("INSERT INTO tbl_fil (id, filnavn) VALUES (%s, %s)",
+	                       (id_new, fileName))
 
 	f_dbConn.commit()
 
@@ -144,10 +120,10 @@ def insertRelateFileSniv1(f_dbConn,f_dbConnCursor,fileid,sniv1id):
 
 	id_new = new_seqid(f_dbConn,f_dbConnCursor)
 
-	f_dbConnCursor.execute("INSERT INTO tbl_rel_fil_sniv1 (ref_fil, ref_sniv1, rekkefolge) VALUES (%s,%s,%s)" \
-	                       % (fileid, sniv1id,id_new))
+	f_dbConnCursor.execute("INSERT INTO tbl_rel_fil_sniv1 (ref_fil, ref_sniv1, rekkefolge) VALUES (%s, %s, %s)",
+	                       (fileid, sniv1id, id_new))
 
-	f_dbConn.commit()	
+	f_dbConn.commit()
 
 	return id_new
 
@@ -160,15 +136,15 @@ def insertCoordinate(f_dbConn,f_dbConnCursor,x,y,z,objid):
 
 	id_new = new_seqid(f_dbConn,f_dbConnCursor)
 
-	f_cur = f_dbConn.cursor()	
+	f_cur = f_dbConn.cursor()
 
-	f_cur.execute("INSERT INTO tbl_koordinat (id,x,y,z) VALUES (%s,%s,%s,%s)" \
-	              % (id_new,x,y,z))
+	f_cur.execute("INSERT INTO tbl_koordinat (id,x,y,z) VALUES (%s, %s, %s, %s)",
+	              (id_new, x, y, z))
 
-	f_cur.execute("INSERT INTO tbl_rel_geoobj_koordinat (ref_geoobj,ref_koordinat,rekkefnr) VALUES (%s,%s,%s)" \
-	              % (objid,id_new,id_new))
+	f_cur.execute("INSERT INTO tbl_rel_geoobj_koordinat (ref_geoobj,ref_koordinat,rekkefnr) VALUES (%s, %s, %s)",
+	              (objid, id_new, id_new))
 
-	f_dbConn.commit()	
+	f_dbConn.commit()
 
 	return id_new
 
@@ -181,10 +157,10 @@ def insertSniv1(f_dbConn,f_dbConnCursor,sniv_kode,sniv_content):
 
 	id_new = new_seqid(f_dbConn,f_dbConnCursor)
 
-	f_dbConnCursor.execute("INSERT INTO tbl_sniv1 (id, main, content) VALUES (%s,'%s','%s')" \
-	                       % (id_new,sniv_kode,sniv_content))
+	f_dbConnCursor.execute("INSERT INTO tbl_sniv1 (id, main, content) VALUES (%s, %s, %s)",
+	                       (id_new, sniv_kode, sniv_content))
 
-	f_dbConn.commit()	
+	f_dbConn.commit()
 
 	return id_new
 
@@ -197,9 +173,8 @@ def insertSniv1(f_dbConn,f_dbConnCursor,sniv_kode,sniv_content):
 #
 def insertrelSniv1Sniv2(f_dbConn,f_dbConnCursor,id_sniv1,id_sniv2):
 
-
-	f_dbConnCursor.execute("INSERT INTO tbl_rel_sniv1_sniv2 (ref_sniv1, ref_sniv2) VALUES (%s,%s)" \
-	                       % (id_sniv1,id_sniv2))
+	f_dbConnCursor.execute("INSERT INTO tbl_rel_sniv1_sniv2 (ref_sniv1, ref_sniv2) VALUES (%s, %s)",
+	                       (id_sniv1, id_sniv2))
 
 	f_dbConn.commit()
 
@@ -212,10 +187,10 @@ def insertSniv2(f_dbConn,f_dbConnCursor,sniv_kode,sniv_content):
 
 	id_new = new_seqid(f_dbConn,f_dbConnCursor)
 
-	f_dbConnCursor.execute("INSERT INTO tbl_sniv2 (id, main, content) VALUES (%s,'%s','%s')" \
-	                       % (id_new,sniv_kode,sniv_content))
+	f_dbConnCursor.execute("INSERT INTO tbl_sniv2 (id, main, content) VALUES (%s, %s, %s)",
+	                       (id_new, sniv_kode, sniv_content))
 
-	f_dbConn.commit()	
+	f_dbConn.commit()
 
 	return id_new
 
@@ -228,9 +203,8 @@ def insertSniv2(f_dbConn,f_dbConnCursor,sniv_kode,sniv_content):
 #
 def insertrelSniv2Sniv3(f_dbConn,f_dbConnCursor,id_sniv2,id_sniv3):
 
-
-	f_dbConnCursor.execute("INSERT INTO tbl_rel_sniv2_sniv3 (ref_sniv2, ref_sniv3) VALUES (%s,%s)" \
-	                       % (id_sniv2,id_sniv3))
+	f_dbConnCursor.execute("INSERT INTO tbl_rel_sniv2_sniv3 (ref_sniv2, ref_sniv3) VALUES (%s, %s)",
+	                       (id_sniv2, id_sniv3))
 
 	f_dbConn.commit()
 
@@ -243,10 +217,10 @@ def insertSniv3(f_dbConn,f_dbConnCursor,sniv_kode,sniv_content):
 
 	id_new = new_seqid(f_dbConn,f_dbConnCursor)
 
-	f_dbConnCursor.execute("INSERT INTO tbl_sniv3 (id, main, content) VALUES (%s,'%s','%s')" \
-	                       % (id_new,sniv_kode,sniv_content))
+	f_dbConnCursor.execute("INSERT INTO tbl_sniv3 (id, main, content) VALUES (%s, %s, %s)",
+	                       (id_new, sniv_kode, sniv_content))
 
-	f_dbConn.commit()	
+	f_dbConn.commit()
 
 	return id_new
 
@@ -259,7 +233,8 @@ def insertSniv3(f_dbConn,f_dbConnCursor,sniv_kode,sniv_content):
 #
 def getLastCoordinateKP(f_dbConn,f_dbConnCursor,cur_koordid,Koordniv):
 
-	f_dbConnCursor.execute("UPDATE tbl_rel_geoobj_koordinat SET kp=%s WHERE ref_koordinat = %s" % (Koordniv,cur_koordid))
+	f_dbConnCursor.execute("UPDATE tbl_rel_geoobj_koordinat SET kp=%s WHERE ref_koordinat = %s",
+	                       (Koordniv, cur_koordid))
 
 	f_dbConn.commit()
 
@@ -272,7 +247,8 @@ def getLastCoordinateKP(f_dbConn,f_dbConnCursor,cur_koordid,Koordniv):
 #
 def getLastCoordinateKVALITET(f_dbConn,f_dbConnCursor,cur_koordid,kvalitet):
 
-	f_dbConnCursor.execute("UPDATE tbl_rel_geoobj_koordinat SET kvalitet='%s' WHERE ref_koordinat = %s" % (kvalitet,cur_koordid))
+	f_dbConnCursor.execute("UPDATE tbl_rel_geoobj_koordinat SET kvalitet=%s WHERE ref_koordinat = %s",
+	                       (kvalitet, cur_koordid))
 
 	f_dbConn.commit()
 
@@ -368,19 +344,13 @@ def manageSniv2(conn,cur,fileLine,cur_sniv1id, list_sniv2):
 
 		elif fileLine_0 == "REF":
 
-			refinfo =[]
+			splitfileLine.pop(0)
 
-			refinfostring = ""
-
-			splitfileLine.pop(0)				
-
-			for refinfo in splitfileLine:
-
-				refinfostring += "%s " % (refinfo)
+			refinfostring = " ".join(splitfileLine) + " "
 
 			id_svniv2 = insertSniv2(conn,cur, fileLine_0, refinfostring)
 
-			insertrelSniv1Sniv2(conn,cur, cur_sniv1id, id_svniv2)			
+			insertrelSniv1Sniv2(conn,cur, cur_sniv1id, id_svniv2)
 
 		else:
 			# Count parts of line 8split by space)
@@ -518,49 +488,12 @@ def manageCoordinate(conn,cur,fileLine,sniv1id):
 
 #----------------------------------------------------------------------
 #
-# The function receives a list and returns the list without duplicates
+# The function receives a list and returns the list without duplicates,
+# preserving original order.
 #
 def unique(s):
 
-	n = len(s)
-	if n == 0:
-		return []
-
-	# Try dict first
-	u = {}
-	try:
-		for x in s:
-			u[x] = 1
-	except TypeError:
-		del u  # Try next method
-	else:
-		return u.keys()
-
-	# Sorts the list and continously removes duplicates
-	try:
-		t = list(s)
-		t.sort()
-
-	except TypeError:
-		del t  # Try next method
-	else:
-		assert n > 0
-		last = t[0]
-		lasti = i = 1
-		while i < n:
-			if t[i] != last:
-				t[lasti] = last = t[i]
-				lasti += 1
-			i += 1
-		return t[:lasti]
-
-	# New list is made. Goes through the list and adds the elements not
-	# already in the new list
-	u = []
-	for x in s:
-		if x not in u:
-			u.append(x)
-	return u
+	return list(dict.fromkeys(s))
 
 
 
@@ -580,23 +513,26 @@ def unique(s):
 #
 def getCoordinateList(conn,cur, sniv1_id, sosiUTM,sosiUnit,sosiFilename):
 
-	sortOrder =""
+	sortOrder = ""
 
 	if float(sniv1_id)<0:
 		sortOrder = "ASC"
 
+	# sortOrder is either "ASC" or "" - whitelist check ensures safety before string interpolation
+	assert sortOrder in ("ASC", ""), "Unexpected sortOrder value"
+
 	# Query to read the coordinates into a list.
-	cur.execute("SELECT public.tbl_koordinat.x, public.tbl_koordinat.y , public.tbl_koordinat.z \
-				FROM  public.tbl_rel_fil_sniv1 \
-	            INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_fil ON (public.tbl_rel_fil_sniv1.ref_fil=public.tbl_fil.id) \
-	            INNER JOIN public.tbl_rel_geoobj_koordinat ON (public.tbl_rel_geoobj_koordinat.ref_geoobj=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_koordinat ON (public.tbl_rel_geoobj_koordinat.ref_koordinat=public.tbl_koordinat.id) \
-	            WHERE ((public.tbl_sniv1.content = '%s') \
-	            AND (public.tbl_fil.filnavn = '%s')) \
-	            ORDER BY \
-	            public.tbl_rel_geoobj_koordinat.rekkefnr %s " \
-	            % (sniv1_id,sosiFilename,sortOrder))
+	# ORDER BY direction cannot be parameterized; sortOrder is derived from float(sniv1_id), not user input.
+	cur.execute(
+		("SELECT public.tbl_koordinat.x, public.tbl_koordinat.y, public.tbl_koordinat.z "
+		 "FROM public.tbl_rel_fil_sniv1 "
+		 "INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) "
+		 "INNER JOIN public.tbl_fil ON (public.tbl_rel_fil_sniv1.ref_fil=public.tbl_fil.id) "
+		 "INNER JOIN public.tbl_rel_geoobj_koordinat ON (public.tbl_rel_geoobj_koordinat.ref_geoobj=public.tbl_sniv1.id) "
+		 "INNER JOIN public.tbl_koordinat ON (public.tbl_rel_geoobj_koordinat.ref_koordinat=public.tbl_koordinat.id) "
+		 "WHERE (public.tbl_sniv1.content = %%s AND public.tbl_fil.filnavn = %%s) "
+		 "ORDER BY public.tbl_rel_geoobj_koordinat.rekkefnr %s") % sortOrder,
+		(sniv1_id, sosiFilename))
 
 	rows = cur.fetchall()
 
@@ -634,16 +570,18 @@ def getCoordinateList(conn,cur, sniv1_id, sosiUTM,sosiUnit,sosiFilename):
 #
 def getSosiHeadVariables(conn,cur,fileName):
 
-	cur.execute("SELECT public.tbl_sniv3.id,  public.tbl_sniv3.main,  public.tbl_sniv3.content \
-				FROM   public.tbl_rel_sniv2_sniv3 \
-	            INNER JOIN public.tbl_sniv3 ON (public.tbl_rel_sniv2_sniv3.ref_sniv3=public.tbl_sniv3.id) \
-	            INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv2_sniv3.ref_sniv2=public.tbl_sniv2.id) \
-	            INNER JOIN public.tbl_rel_sniv1_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) \
-	            INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_rel_fil_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_fil ON (public.tbl_fil.id=public.tbl_rel_fil_sniv1.ref_fil) \
-	            WHERE (public.tbl_sniv1.main = 'HODE') \
-	            AND (public.tbl_fil.filnavn = '%s')" % (fileName))
+	cur.execute(
+		"SELECT public.tbl_sniv3.id, public.tbl_sniv3.main, public.tbl_sniv3.content "
+		"FROM public.tbl_rel_sniv2_sniv3 "
+		"INNER JOIN public.tbl_sniv3 ON (public.tbl_rel_sniv2_sniv3.ref_sniv3=public.tbl_sniv3.id) "
+		"INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv2_sniv3.ref_sniv2=public.tbl_sniv2.id) "
+		"INNER JOIN public.tbl_rel_sniv1_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) "
+		"INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) "
+		"INNER JOIN public.tbl_rel_fil_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) "
+		"INNER JOIN public.tbl_fil ON (public.tbl_fil.id=public.tbl_rel_fil_sniv1.ref_fil) "
+		"WHERE (public.tbl_sniv1.main = 'HODE') "
+		"AND (public.tbl_fil.filnavn = %s)",
+		(fileName,))
 
 	rows = cur.fetchall()
 
@@ -667,15 +605,15 @@ def getSosiHeadVariables(conn,cur,fileName):
 #
 def getObjectlist(conn,cur,filename):
 
-	cur.execute("SELECT public.tbl_sniv1.id, \
-				public.tbl_sniv1.main, \
-				public.tbl_sniv1.content \
-				FROM public.tbl_rel_fil_sniv1 \
-	            INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_fil ON (public.tbl_rel_fil_sniv1.ref_fil=public.tbl_fil.id) \
-	            INNER JOIN public.tbl_type_geoobj ON (public.tbl_type_geoobj.navn=public.tbl_sniv1.main) \
-	            WHERE (public.tbl_fil.filnavn = '%s') \
-	            ORDER BY public.tbl_sniv1.main, public.tbl_sniv1.content " % (filename))
+	cur.execute(
+		"SELECT public.tbl_sniv1.id, public.tbl_sniv1.main, public.tbl_sniv1.content "
+		"FROM public.tbl_rel_fil_sniv1 "
+		"INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) "
+		"INNER JOIN public.tbl_fil ON (public.tbl_rel_fil_sniv1.ref_fil=public.tbl_fil.id) "
+		"INNER JOIN public.tbl_type_geoobj ON (public.tbl_type_geoobj.navn=public.tbl_sniv1.main) "
+		"WHERE (public.tbl_fil.filnavn = %s) "
+		"ORDER BY public.tbl_sniv1.main, public.tbl_sniv1.content",
+		(filename,))
 
 	rows = cur.fetchall()
 
@@ -695,15 +633,14 @@ def getObjectlist(conn,cur,filename):
 #
 def getObjectName(conn,cur,objid):
 
-	cur.execute("SELECT   public.tbl_sniv2.main,  public.tbl_sniv2.content \
-				FROM \
-public.tbl_rel_sniv1_sniv2 \
-INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) \
-INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) \
-WHERE \
-(public.tbl_sniv2.main = 'NAVN' OR \
-public.tbl_sniv2.main ='OBJTYPE') AND \
-(public.tbl_sniv1.id = %s)" % (objid))
+	cur.execute(
+		"SELECT public.tbl_sniv2.main, public.tbl_sniv2.content "
+		"FROM public.tbl_rel_sniv1_sniv2 "
+		"INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) "
+		"INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) "
+		"WHERE (public.tbl_sniv2.main = 'NAVN' OR public.tbl_sniv2.main = 'OBJTYPE') "
+		"AND (public.tbl_sniv1.id = %s)",
+		(objid,))
 
 	rows = cur.fetchall()
 
@@ -727,17 +664,16 @@ public.tbl_sniv2.main ='OBJTYPE') AND \
 #
 def getObjectContent(conn,cur,objid):
 
-	cur.execute("SELECT   public.tbl_sniv2.main,  public.tbl_sniv2.content \
-				FROM \
-	            public.tbl_rel_sniv1_sniv2 \
-	            INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) \
-	            WHERE \
-	            (public.tbl_sniv2.main = 'IID' OR \
-	            public.tbl_sniv2.main = 'ID_LOKAL' OR \
-	            public.tbl_sniv2.main = 'KOMM' OR \
-	            public.tbl_sniv2.main = 'FTEMA') AND \
-	            (public.tbl_sniv1.id = %s)" % (objid))
+	cur.execute("SELECT public.tbl_sniv2.main, public.tbl_sniv2.content "
+	            "FROM public.tbl_rel_sniv1_sniv2 "
+	            "INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) "
+	            "INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) "
+	            "WHERE (public.tbl_sniv2.main = 'IID' OR "
+	            "public.tbl_sniv2.main = 'ID_LOKAL' OR "
+	            "public.tbl_sniv2.main = 'KOMM' OR "
+	            "public.tbl_sniv2.main = 'FTEMA') AND "
+	            "(public.tbl_sniv1.id = %s)",
+	            (objid,))
 
 	rows = cur.fetchall()
 
@@ -758,11 +694,12 @@ def getObjectContent(conn,cur,objid):
 # 
 def getAttributeList(conn,cur,sniv1_id):
 
-	cur.execute("SELECT   public.tbl_sniv2.id,  public.tbl_sniv2.main,  public.tbl_sniv2.content \
-				FROM public.tbl_rel_sniv1_sniv2 \
-	            INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) \
-	            WHERE (public.tbl_sniv1.id = %s)" % (sniv1_id))
+	cur.execute("SELECT public.tbl_sniv2.id, public.tbl_sniv2.main, public.tbl_sniv2.content "
+	            "FROM public.tbl_rel_sniv1_sniv2 "
+	            "INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) "
+	            "INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) "
+	            "WHERE (public.tbl_sniv1.id = %s)",
+	            (sniv1_id,))
 
 	rows = cur.fetchall()
 
@@ -781,13 +718,12 @@ def getAttributeList(conn,cur,sniv1_id):
 # 
 def getReferenceObjectString(conn,cur,objectReference):
 
-	cur.execute("SELECT public.tbl_sniv2.content \
-				FROM public.tbl_rel_sniv1_sniv2 \
-INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) \
-INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) \
-WHERE \
-(public.tbl_sniv2.main = 'REF') AND \
-(public.tbl_sniv1.content = '%s')" % (objectReference))
+	cur.execute("SELECT public.tbl_sniv2.content "
+	            "FROM public.tbl_rel_sniv1_sniv2 "
+	            "INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) "
+	            "INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) "
+	            "WHERE (public.tbl_sniv2.main = 'REF') AND (public.tbl_sniv1.content = %s)",
+	            (objectReference,))
 
 	rows = cur.fetchall()
 
@@ -808,14 +744,14 @@ WHERE \
 #
 def allReferencedObjects(conn,cur,fileName):
 
-	cur.execute("SELECT public.tbl_sniv2.content \
-				FROM public.tbl_rel_sniv1_sniv2 \
-	            INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) \
-	            INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_rel_fil_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) \
-	            INNER JOIN public.tbl_fil ON (public.tbl_fil.id=public.tbl_rel_fil_sniv1.ref_fil) \
-	            WHERE public.tbl_sniv2.main = 'REF' AND \
-	            (public.tbl_fil.filnavn = '%s')" % (fileName))
+	cur.execute("SELECT public.tbl_sniv2.content "
+	            "FROM public.tbl_rel_sniv1_sniv2 "
+	            "INNER JOIN public.tbl_sniv2 ON (public.tbl_rel_sniv1_sniv2.ref_sniv2=public.tbl_sniv2.id) "
+	            "INNER JOIN public.tbl_sniv1 ON (public.tbl_rel_sniv1_sniv2.ref_sniv1=public.tbl_sniv1.id) "
+	            "INNER JOIN public.tbl_rel_fil_sniv1 ON (public.tbl_rel_fil_sniv1.ref_sniv1=public.tbl_sniv1.id) "
+	            "INNER JOIN public.tbl_fil ON (public.tbl_fil.id=public.tbl_rel_fil_sniv1.ref_fil) "
+	            "WHERE public.tbl_sniv2.main = 'REF' AND (public.tbl_fil.filnavn = %s)",
+	            (fileName,))
 
 	rows = cur.fetchall()
 
@@ -932,7 +868,7 @@ def buildOuterBoundaryObject(conn,cur,curveList,sosiUTM,sosiUnit,sosiFilename):
 # Help text
 #
 def showHelp():
-	print '''NAME
+	print('''NAME
 SOSI to KML conversion Utility version 0.9
 
 FILE
@@ -998,5 +934,5 @@ EXAMPLES
 	(resets the database and removes all former data)
 
 
-	'''
+	''')
 
